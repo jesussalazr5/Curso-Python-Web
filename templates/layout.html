@@ -4,7 +4,7 @@
 
 <head>
     <title>Flaskr</title>
-    <link rel="stylesheet" href="/static/estilo.css">
+    <link rel="stylesheet" href="{{url_for ('static', filename='estilo.css')}}">
 </head>
 
 <body>
@@ -14,7 +14,7 @@
             {% if not session.logado %}
             <a href="{{url_for('login')}}">login</a>
             {% else %}
-            <a href="">logout</a>
+            <a href="{{url_for('logout')}}">logout</a>
             {% endif %}
         </div>
         {% for mensagem in get_flashed_messages() %}

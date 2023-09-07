@@ -5,20 +5,15 @@ from flask import session
 from flask import flash
 from flask import url_for
 from flask import redirect
+from posts import posts
 
-app = Flask("Meu app")
+app = Flask(__name__)  # antes estava meu app
 app.config["SECRET_KEY"] = "pudim"
-
-# mock
-posts = [
-    {"titulo": "Minha primeira postagem", "texto": "teste"},
-    {"titulo": "Segundo Post", "texto": "outro teste"},
-]
 
 
 @app.route("/")
 def exibir_entradas():
-    entradas = posts  # Mock das postagens
+    entradas = posts[::-1]  # Mock das postagens
     return render_template("exibir_entradas.html", entradas=entradas)
 
 
@@ -38,3 +33,25 @@ def login():
         else:
             erro = "Usuario ou senha invalidos"
     return render_template("login.html", erro=erro)
+
+
+@app.route("/logout")
+def logout():
+    session.pop("logado", None)
+    flash("Logout OK")
+    return redirect(url_for("exibir_entradas"))
+
+
+@app.route("/inserir", methods=["POST"])
+def inserir_entrada():
+    if session["logado"]:
+        novo_post = {"titulo": request.form["titulo"], "texto": request.form["texto"]}
+        posts.append(novo_post)
+        flash("Post criado com sucesso!")
+    return redirect(url_for("exibir_entradas"))
+
+
+@app.route("/posts/<int:id>")
+def detalhe_entrada(id):
+    entradas = posts[id - 1]
+    return render_template("detalhe_entrada.html", entradas=entradas)
