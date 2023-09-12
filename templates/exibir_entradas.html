@@ -20,7 +20,7 @@
         <a href="{{ url_for('detalhe_entrada', id=loop.revindex) }}">
             <h2>{{ entradas.titulo }}</h2>
         </a>
-        {{ entradas.texto|truncate(140) }}
+        {{ entradas.texto|truncate(140) }} {{entradas.data_criacao |safe |truncate(140)}}
     </li>
     {% else %}
     <li><em>Inacreditável. Até agora nenhuma entrada.</em></li>

@@ -11,18 +11,20 @@ import sqlite3
 
 app = Flask(__name__)  # antes estava meu app
 app.config["SECRET_KEY"] = "pudim"
+app.config.from_object(__name__)
 
 DATABASE = "banco.db"
-
 
 def conectar():
     return sqlite3.connect(DATABASE)
 
-
 @app.route("/")
 def exibir_entradas():
-    entradas = posts[::-1]  # Mock das postagens
-    return render_template("exibir_entradas.html", entradas=entradas)
+    # entradas = posts[::-1]  # Mock das postagens
+    sql = 'SELECT titulo, texto, data_criacao FROM posts ORDER BY id DESC'
+    resultado = g.bd.execute(sql)
+
+    return render_template("exibir_entradas.html", entradas=sql)
 
 
 @app.route("/layout")
