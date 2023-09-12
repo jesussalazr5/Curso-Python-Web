@@ -6,9 +6,17 @@ from flask import flash
 from flask import url_for
 from flask import redirect
 from posts import posts
+from flask import abort
+import sqlite3
 
 app = Flask(__name__)  # antes estava meu app
 app.config["SECRET_KEY"] = "pudim"
+
+DATABASE = "banco.db"
+
+
+def conectar():
+    return sqlite3.connect(DATABASE)
 
 
 @app.route("/")
@@ -53,5 +61,8 @@ def inserir_entrada():
 
 @app.route("/posts/<int:id>")
 def detalhe_entrada(id):
-    entradas = posts[id - 1]
-    return render_template("detalhe_entrada.html", entradas=entradas)
+    try:
+        entradas = posts[id - 1]
+        return render_template("detalhe_entrada.html", entradas=entradas)
+    except Exception:
+        return abort(404)
